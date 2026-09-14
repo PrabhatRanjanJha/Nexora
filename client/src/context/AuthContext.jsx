@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { axiosInstance } from '../axiosCalls/axios.js'
 
 const AuthContext = createContext(null)
@@ -6,6 +6,15 @@ const AuthContext = createContext(null)
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  const logout = useCallback(async () => {
+    try {
+      await axiosInstance.post('/customer/logout')
+    } catch {
+    } finally {
+      setUser(null)
+    }
+  }, [])
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -23,7 +32,7 @@ export function AuthProvider({ children }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading }}>
+    <AuthContext.Provider value={{ user, setUser, loading, logout }}>
       {children}
     </AuthContext.Provider>
   )
