@@ -7,7 +7,7 @@ import cors from 'cors'
 import customerRoutes from './routes/customer.routes.js'
 
 const app = express()
-const Port = 9001
+const port = 8084
 
 dotenv.config()
 
