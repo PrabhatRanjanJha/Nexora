@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
 import customerRoutes from './routes/customer.routes.js'
+import productRoutes from './routes/product.routes.js'
 
 const app = express()
 const port = 8084
@@ -24,6 +25,7 @@ app.use(cookieParser())
 app.use(express.json())
 
 app.use('/customer', customerRoutes)
+app.use('/products', productRoutes)
 
 app.get('/', (req, res) => {
     res.send('Server is running')
