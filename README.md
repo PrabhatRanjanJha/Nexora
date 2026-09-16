@@ -1,154 +1,262 @@
-# Nexora 🚀
+# Nexora
 
-Nexora is a MERN-based customer portal built with **React, Express, and MongoDB**.
+Nexora is a full-stack e-commerce platform built with React, Express, MongoDB, and Mongoose. Customers can create accounts, browse a database-backed product catalogue, search and filter products, view product details, and manage their profile and delivery address.
 
-The current version focuses on customer authentication, protected pages, and basic customer profile management.
+The project is under active development. Cart, checkout, payment, and order persistence are planned for later iterations.
 
-> 🚧 Nexora is currently under development.
+## Features
 
----
+- Customer registration and login
+- JWT authentication stored in HTTP-only cookies
+- Protected and public frontend routes
+- Customer profile and shipping address management
+- Profile image preview and upload
+- Product creation API
+- Product listing and product details APIs
+- Case-insensitive product search
+- Category filtering
+- Price sorting
+- Dynamic product listing cards
+- Product details page with UI-only Add to Cart action
+- Loading, error, and empty states
+- MongoDB persistence and bcrypt password hashing
 
-## ✨ Features
+## Tech Stack
 
-* 🔐 Customer signup & login
-* 🔑 JWT authentication
-* 🍪 HTTP-only authentication cookies
-* 🔒 Protected routes
-* 👤 Customer profile retrieval
-* 🚪 Logout
-* 🔄 Authentication state management with React Context
-* 🗄️ MongoDB database
-* 🔒 Password hashing with bcrypt
+### Frontend
 
----
+- React 19
+- Vite
+- React Router
+- Axios
+- Tailwind CSS
 
-## 🛠️ Tech Stack
+### Backend
 
-**Frontend**
+- Node.js
+- Express 5
+- MongoDB
+- Mongoose
+- JSON Web Tokens
+- bcrypt
+- Multer
+- dotenv
+- cookie-parser
+- cors
 
-* React 19
-* Vite
-* React Router
-* Axios
-* Tailwind CSS
+## Local URLs
 
-**Backend**
+The development setup uses localhost consistently:
 
-* Node.js
-* Express 5
-* MongoDB
-* Mongoose
-* JWT
-* bcrypt
-* dotenv
-* cookie-parser
+| Service | URL |
+| --- | --- |
+| Frontend | http://localhost:5173 |
+| Backend | http://localhost:8084 |
 
----
+The backend allows credentialed requests from `http://localhost:5173`.
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 Nexora/
 ├── client/
 │   ├── public/
-│   │   └── favicon.svg
 │   └── src/
 │       ├── axiosCalls/
 │       │   └── axios.js
 │       ├── components/
+│       │   ├── ProductCard.jsx
 │       │   ├── ProtectedRoute.jsx
 │       │   ├── PublicRoute.jsx
 │       │   └── StatusMessage.jsx
 │       ├── context/
 │       │   └── AuthContext.jsx
 │       ├── Pages/
+│       │   ├── CustomerProfile.jsx
 │       │   ├── Home.jsx
 │       │   ├── Landing.jsx
 │       │   ├── Login.jsx
+│       │   ├── Logout.jsx
+│       │   ├── ProductDetails.jsx
+│       │   ├── Products.jsx
 │       │   └── Signup.jsx
+│       ├── services/
+│       │   └── productApi.js
 │       ├── App.jsx
 │       ├── index.css
 │       └── main.jsx
 │
 └── server/
     ├── controllers/
-    │   └── customer.controllers.js
+    │   ├── customer.controllers.js
+    │   └── product.controllers.js
     ├── middlewares/
-    │   └── authMiddleware.js
+    │   ├── authMiddleware.js
+    │   └── upload.middleware.js
     ├── model/
-    │   └── customer.model.js
+    │   ├── customer.model.js
+    │   └── product.model.js
     ├── routes/
-    │   └── customer.routes.js
+    │   ├── customer.routes.js
+    │   └── product.routes.js
     ├── utils/
     │   └── genToken.js
     └── index.js
 ```
 
----
+## Frontend Routes
 
-## 🌐 Application Routes
+| Route | Access | Purpose |
+| --- | --- | --- |
+| `/` | Public | E-commerce landing page |
+| `/login` | Public | Customer login |
+| `/signup` | Public | Customer registration |
+| `/home` | Protected | Shopping home and catalogue entry point |
+| `/products` | Protected | Dynamic product listing, search, filtering, and sorting |
+| `/products/:id` | Protected | Individual product details |
+| `/profile` | Protected | Customer details, address, and profile image management |
+| `/logout` | Public | Clears the session and redirects to login |
 
-| Route     | Purpose                 |
-| --------- | ----------------------- |
-| `/`       | Landing page            |
-| `/login`  | Login                   |
-| `/signup` | Customer registration   |
-| `/home`   | Protected customer page |
-| `*`       | Redirects to `/`        |
+`AuthContext` loads the current customer from `/customer/me`. `PublicRoute` redirects authenticated customers away from login and signup, while `ProtectedRoute` redirects unauthenticated customers to login.
 
-Authentication is managed through `AuthContext`, with `ProtectedRoute` and `PublicRoute` handling access to different pages.
+## Backend API
 
----
+### Customer APIs
 
-## 🔌 API
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `POST` | `/customer/register` | Create a customer account |
+| `POST` | `/customer/login` | Authenticate a customer |
+| `GET` | `/customer/me` | Return the authenticated customer |
+| `PUT` | `/customer/profile` | Update customer and shipping details |
+| `POST` | `/customer/profile/image` | Upload a customer profile image |
+| `POST` | `/customer/logout` | Clear the authentication cookie |
 
-The backend runs on port `9001` and exposes customer authentication routes under `/customer`.
+Customer responses are sanitized so the stored password is never returned. Profile update routes use the authenticated customer from the JWT cookie rather than accepting a customer ID from the browser.
 
-| Method | Endpoint             | Purpose                    |
-| ------ | -------------------- | -------------------------- |
-| `POST` | `/customer/register` | Create a customer account  |
-| `POST` | `/customer/login`    | Login                      |
-| `GET`  | `/customer/me`       | Get the logged-in customer |
-| `POST` | `/customer/logout`   | Logout                     |
+### Product APIs
 
-The frontend communicates with the backend using Axios and sends authentication cookies with requests.
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `POST` | `/products` | Create a product |
+| `GET` | `/products` | Return products |
+| `GET` | `/products/:id` | Return one product |
 
----
-
-## 🔐 Authentication
-
-Nexora uses **JWT-based authentication with HTTP-only cookies**.
+Product listing query parameters:
 
 ```text
-Signup / Login
-      ↓
-JWT generated
-      ↓
-HTTP-only cookie
-      ↓
-Authenticated request
-      ↓
-Protected route / API
+/products?search=keyboard
+/products?category=Electronics
+/products?search=keyboard&category=Electronics
+/products?sort=price_asc
+/products?sort=price_desc
 ```
 
-Passwords are hashed using **bcrypt** and are not returned in customer responses.
+Search matches product names case-insensitively. Category matching is case-insensitive. The API returns a count and product array for listing requests.
 
----
+## Product Schema
 
-## 🚧 Future Improvements
+Products contain:
 
-* More customer portal functionality
-* Automated testing
-* Improved validation and error handling
-* Production deployment
-* Additional security improvements
+| Field | Type | Rules |
+| --- | --- | --- |
+| `name` | String | Required |
+| `description` | String | Required |
+| `price` | Number | Required, greater than 0 |
+| `category` | String | Required |
+| `image` | String | Required image URL |
+| `stock` | Number | Required, minimum 0 |
+| `createdAt` | Date | Generated automatically |
 
----
+## Setup
 
-## 👨‍💻 Author
+### Prerequisites
 
-**Prabhat Ranjan Jha**
+- Node.js 18 or later
+- npm
+- MongoDB database
 
----
+### Clone the repository
 
-**Nexora — still building. 🚀**
+```bash
+git clone https://github.com/PrabhatRanjanJha/Nexora.git
+cd Nexora
+```
+
+### Configure the backend
+
+Create `server/.env`:
+
+```env
+dbURL=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+```
+
+Do not commit `.env` files or real credentials.
+
+### Install dependencies
+
+```bash
+cd server
+npm install
+
+cd ../client
+npm install
+```
+
+### Start the backend
+
+From the `server` directory:
+
+```bash
+node index.js
+```
+
+The API will run at `http://localhost:8084`.
+
+### Start the frontend
+
+In a second terminal, from the `client` directory:
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:5173` in the browser. Use `localhost` consistently instead of `127.0.0.1` so the configured CORS origin matches.
+
+## Available Scripts
+
+From `client`:
+
+```bash
+npm run dev
+npm run build
+npm run preview
+```
+
+From `server`:
+
+```bash
+node index.js
+```
+
+## Security Notes
+
+- Passwords are hashed with bcrypt before storage.
+- JWTs are stored in HTTP-only cookies.
+- Profile and shipping updates require authentication.
+- Profile image uploads accept images up to 2 MB.
+- Passwords are removed from all customer API responses.
+- MongoDB credentials and JWT secrets must remain in local environment files.
+
+## Current Limitations
+
+- Add to Cart is currently a frontend-only interaction.
+- Cart persistence is not implemented yet.
+- Checkout, payments, and order history are not implemented yet.
+- Product creation is currently an open API and does not yet require admin authorization.
+- Automated tests are not currently configured.
+
+## Author
+
+Prabhat Ranjan Jha
