@@ -214,6 +214,17 @@ node index.js
 
 The API will run at `http://localhost:8084`.
 
+### Seed sample products
+
+To replace the current product collection with 12 sample products across Electronics, Fashion, Books, and Home:
+
+```bash
+cd server
+npm run seed
+```
+
+The seed command clears existing products before inserting the sample catalogue. Use it only when resetting development data is intended.
+
 ### Start the frontend
 
 In a second terminal, from the `client` directory:
