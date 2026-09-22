@@ -63,7 +63,8 @@ Nexora/
 │   ├── public/
 │   └── src/
 │       ├── axiosCalls/
-│       │   └── axios.js
+│       │   ├── axios.js
+│       │   └── productApi.js
 │       ├── components/
 │       │   ├── ProductCard.jsx
 │       │   ├── ProtectedRoute.jsx
@@ -80,8 +81,6 @@ Nexora/
 │       │   ├── ProductDetails.jsx
 │       │   ├── Products.jsx
 │       │   └── Signup.jsx
-│       ├── services/
-│       │   └── productApi.js
 │       ├── App.jsx
 │       ├── index.css
 │       └── main.jsx
@@ -214,16 +213,7 @@ node index.js
 
 The API will run at `http://localhost:8084`.
 
-### Seed sample products
-
-To replace the current product collection with 12 sample products across Electronics, Fashion, Books, and Home:
-
-```bash
-cd server
-npm run seed
-```
-
-The seed command clears existing products before inserting the sample catalogue. Use it only when resetting development data is intended.
+Product records can be created through `POST /products` using the API contract described above.
 
 ### Start the frontend
 
