@@ -17,6 +17,9 @@ The project is under active development. Cart, checkout, payment, and order pers
 - Category filtering
 - Price sorting
 - Dynamic product listing cards
+- Persistent, customer-specific wishlist with protected APIs
+- Product-card wishlist actions and a responsive wishlist page
+- Wishlist product count in the shopping navigation
 - Product details page with UI-only Add to Cart action
 - Loading, error, and empty states
 - MongoDB persistence and bcrypt password hashing
@@ -113,6 +116,7 @@ Nexora/
 | `/home` | Protected | Shopping home and catalogue entry point |
 | `/products` | Protected | Dynamic product listing, search, filtering, and sorting |
 | `/products/:id` | Protected | Individual product details |
+| `/wishlist` | Protected | Saved products with remove and product-detail actions |
 | `/profile` | Protected | Customer details, address, and profile image management |
 | `/logout` | Public | Clears the session and redirects to login |
 
@@ -140,6 +144,17 @@ Customer responses are sanitized so the stored password is never returned. Profi
 | `POST` | `/products` | Create a product |
 | `GET` | `/products` | Return products |
 | `GET` | `/products/:id` | Return one product |
+
+### Wishlist APIs
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `POST` | `/wishlist/:productId` | Add a product to the authenticated customer's wishlist |
+| `GET` | `/wishlist` | Return populated wishlist products for the authenticated customer |
+| `GET` | `/wishlist/count` | Return the authenticated customer's current wishlist count |
+| `DELETE` | `/wishlist/:productId` | Remove a product from the authenticated customer's wishlist |
+
+Wishlist records store Product ObjectId references on the Customer document. All wishlist endpoints use the existing HTTP-only JWT cookie and never accept a customer ID from the client. Duplicate additions return `409`; invalid IDs return `400`; missing products or wishlist entries return `404`.
 
 Product listing query parameters:
 
