@@ -10,7 +10,7 @@ const normalizeCart = (customer) => {
     return customer.cart
         .filter((item) => item && item.product)
         .map((item) => ({
-            product: item.product.toObject ? item.product.toObject() : item.product,
+            product: item.product,
             quantity: item.quantity
         }))
 }
