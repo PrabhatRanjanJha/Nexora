@@ -133,27 +133,61 @@ export const removeFromCart = async (req, res) => {
     try {
         const { productId } = req.params
 
-        if (!mongoose.Types.ObjectId.isValid(productId)) {
-            return res.status(400).json({ message: 'Invalid product ID' })
+        // Step 1: Validate the product ID
+        const isValidProductId = mongoose.Types.ObjectId.isValid(productId)
+
+        if (!isValidProductId) {
+            return res.status(400).json({
+                message: 'Invalid product ID'
+            })
         }
 
-        const customer = await Customer.findOneAndUpdate(
-            { _id: req.customer._id, 'cart.product': productId },
-            { $pull: { cart: { product: productId } } },
-            { new: true }
-        )
+        // Step 2: Find the customer
+        const customer = await Customer.findById(req.customer._id)
 
         if (!customer) {
-            return res.status(404).json({ message: 'Product is not in your cart' })
+            return res.status(404).json({
+                message: 'Customer not found'
+            })
         }
 
-        const updatedCustomer = await getPopulatedCustomerCart(req.customer._id)
+        // Step 3: Check whether the product exists in the cart
+        const productIndex = customer.cart.findIndex((cartItem) => {
+            return cartItem.product.toString() === productId
+        })
+
+        // Step 4: If product is not found in cart
+        if (productIndex === -1) {
+            return res.status(404).json({
+                message: 'Product is not in your cart'
+            })
+        }
+
+        // Step 5: Remove the product from the cart
+        customer.cart.splice(productIndex, 1)
+
+        // Step 6: Save the updated customer
+        await customer.save()
+
+        // Step 7: Get the updated cart with populated product details
+        const updatedCustomer = await getPopulatedCustomerCart(
+            req.customer._id
+        )
+
+        // Step 8: Normalize the cart before sending the response
+        const updatedCart = normalizeCart(updatedCustomer)
+
+        // Step 9: Send successful response
         return res.status(200).json({
             success: true,
             message: 'Product removed from cart',
-            cart: normalizeCart(updatedCustomer)
+            cart: updatedCart
         })
+
     } catch (error) {
-        return res.status(500).json({ message: 'Unable to remove product from cart', error: error.message })
+        return res.status(500).json({
+            message: 'Unable to remove product from cart',
+            error: error.message
+        })
     }
 }
