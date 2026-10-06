@@ -21,7 +21,7 @@ export const addToWishlist = async (req, res) => {
             },
 
             { $addToSet: { wishlist: productId } },
-            { new: true }
+            { returnDocument: 'after' }
         )
 
         if (!customer) {
@@ -81,7 +81,7 @@ export const removeFromWishlist = async (req, res) => {
         const customer = await Customer.findOneAndUpdate(
             { _id: req.customer._id, wishlist: productId },
             { $pull: { wishlist: productId } },
-            { new: true }
+            { returnDocument: 'after' }
         )
 
         if (!customer) {
