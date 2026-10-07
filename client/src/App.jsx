@@ -9,6 +9,9 @@ import Products from './Pages/Products.jsx'
 import ProductDetails from './Pages/ProductDetails.jsx'
 import Wishlist from './Pages/Wishlist.jsx'
 import Cart from './Pages/Cart.jsx'
+import Checkout from './Pages/Checkout.jsx'
+import Orders from './Pages/Orders.jsx'
+import OrderDetails from './Pages/OrderDetails.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import PublicRoute from './components/PublicRoute.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
@@ -29,6 +32,9 @@ function App() {
             <Route path="/products/:id" element={<ProtectedRoute><ProductDetails /></ProtectedRoute>} />
             <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
             <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+            <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+            <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+            <Route path="/orders/:id" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
             <Route path="/logout" element={<Logout />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

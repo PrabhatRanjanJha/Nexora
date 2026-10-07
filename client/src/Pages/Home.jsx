@@ -20,7 +20,7 @@ function Home() {
           <span>Nexora</span>
         </Link>
         <div className="market-search" role="search"><span aria-hidden="true">⌕</span><span>Search products, brands and more</span></div>
-        <div className="nav-actions"><Link className="nav-link" to="/products">Products</Link><WishlistNavLink /><CartNavLink /><Link className="nav-link" to="/profile">Account</Link><Link className="nav-link" to="/home">Orders</Link><button className="nav-link logout-button" type="button" onClick={handleLogout}>Log out</button></div>
+        <div className="nav-actions"><Link className="nav-link" to="/products">Products</Link><WishlistNavLink /><CartNavLink /><Link className="nav-link" to="/orders">Orders</Link><Link className="nav-link" to="/profile">Account</Link><button className="nav-link logout-button" type="button" onClick={handleLogout}>Log out</button></div>
       </nav>
 
       <section className="home-content">
@@ -43,7 +43,7 @@ function Home() {
             <div className="status-icon" aria-hidden="true">↗</div>
             <h2>Need help with an order?</h2>
             <p>Our support team is ready to help with delivery, returns, or anything else.</p>
-            <Link className="text-link" to="/home">View your orders <span aria-hidden="true">→</span></Link>
+            <Link className="text-link" to="/orders">View your orders <span aria-hidden="true">→</span></Link>
           </article>
         </div>
       </section>

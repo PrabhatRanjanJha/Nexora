@@ -447,9 +447,74 @@ button { cursor: pointer; }
 .profile-save { margin-top: 29px; border: 0; }
 .profile-save:disabled { cursor: wait; opacity: .65; }
 
+.checkout-content, .orders-content, .order-details-content { max-width: 1080px; margin: 0 auto; padding: 65px 32px 100px; }
+.checkout-content .home-heading h1 span, .orders-content .home-heading h1 span, .order-details-content .home-heading h1 span { color: #d76343; }
+.checkout-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr); gap: 18px; align-items: start; margin-top: 38px; }
+.checkout-card, .order-details-card { border: 1px solid #dce2dc; border-radius: 18px; background: #fffefa; padding: 25px; }
+.checkout-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 25px; }
+.checkout-fields label { color: #64736a; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+.checkout-fields input { display: block; width: 100%; min-height: 46px; margin-top: 7px; border: 1px solid #d7ded8; border-radius: 9px; outline: 0; background: #f8faf7; padding: 10px 12px; color: #17251f; font-family: 'DM Sans', sans-serif; font-size: 13px; letter-spacing: 0; text-transform: none; }
+.checkout-fields input:focus { border-color: #1f4b3d; box-shadow: 0 0 0 4px rgba(31, 75, 61, .1); }
+.checkout-fields input[aria-invalid="true"] { border-color: #d76343; }
+.checkout-fields small { display: block; margin-top: 6px; color: #ad4d36; font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0; text-transform: none; }
+.checkout-field-wide { grid-column: 1 / -1; }
+.checkout-submit { width: 100%; margin-top: 25px; border: 0; }
+.checkout-submit:disabled { cursor: wait; opacity: .65; }
+.checkout-note { margin: 13px 0 0; color: #78857d; font-size: 11px; line-height: 1.6; }
+.checkout-error { margin-top: 22px; border: 1px solid #efc7bb; border-radius: 10px; background: #fff2ee; padding: 12px 14px; color: #ad4d36; font-size: 13px; }
+.checkout-summary { position: sticky; top: 24px; }
+.checkout-summary-items { display: grid; gap: 15px; margin-top: 25px; }
+.checkout-summary-item { display: flex; justify-content: space-between; gap: 14px; color: #607067; font-size: 12px; }
+.checkout-summary-item small { color: #89978f; }
+.checkout-summary-item strong { flex: none; color: #17251f; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; }
+.checkout-total, .order-detail-total { display: flex; justify-content: space-between; gap: 15px; margin-top: 24px; border-top: 1px solid #e1e7e1; padding-top: 17px; color: #607067; }
+.checkout-total strong, .order-detail-total strong { color: #17251f; font-family: 'DM Mono', monospace; font-size: 15px; }
+.orders-list { display: grid; gap: 16px; margin-top: 37px; }
+.order-card { border: 1px solid #dce2dc; border-radius: 16px; background: #fffefa; padding: 23px; }
+.order-card-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; }
+.order-card-heading .eyebrow, .order-details-card .eyebrow { margin: 0 0 9px; }
+.order-card-heading h2 { margin: 0; color: #17251f; font-family: 'Fraunces', serif; font-size: 23px; font-weight: 500; overflow-wrap: anywhere; }
+.order-status { display: inline-flex; flex: none; border-radius: 999px; background: #edf3ee; padding: 7px 10px; color: #1f4b3d; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .04em; }
+.order-status-pending_payment { background: #fff3df; color: #8a5b16; }
+.order-card-items { display: grid; gap: 5px; margin: 21px 0; border-top: 1px solid #e9eeea; border-bottom: 1px solid #e9eeea; padding: 15px 0; }
+.order-card-items p { margin: 0; color: #354a40; font-size: 13px; }
+.order-card-items span { color: #78857d; }
+.order-card-footer { display: flex; align-items: center; gap: 20px; color: #78857d; font-size: 11px; }
+.order-card-footer > span { display: grid; gap: 5px; }
+.order-card-footer strong { color: #17251f; font-family: 'DM Mono', monospace; font-size: 12px; }
+.order-card-footer .button { margin-left: auto; }
+.orders-state { display: grid; min-height: 180px; justify-items: center; align-content: center; gap: 12px; margin-top: 34px; border: 1px dashed #cbd6cc; border-radius: 15px; padding: 25px; color: #607067; text-align: center; }
+.orders-state p { margin: 0; }
+.orders-state-error { border-color: #efc7bb; background: #fff8f5; color: #ad4d36; }
+.orders-empty { margin-top: 34px; }
+.order-details-card { max-width: 800px; margin-top: 35px; }
+.order-details-card .order-card-heading { padding-bottom: 20px; border-bottom: 1px solid #e9eeea; }
+.order-detail-items { display: grid; }
+.order-detail-item { display: flex; align-items: center; gap: 14px; border-bottom: 1px solid #e9eeea; padding: 15px 0; }
+.order-detail-item img { width: 58px; height: 58px; flex: none; border-radius: 9px; background: #dbe6dd; object-fit: cover; }
+.order-detail-item > div { display: grid; flex: 1; gap: 5px; color: #17251f; font-size: 13px; }
+.order-detail-item > div span { color: #78857d; font-size: 11px; }
+.order-detail-item > strong { flex: none; color: #17251f; font-family: 'DM Mono', monospace; font-size: 11px; }
+.order-detail-total { margin-top: 0; }
+.order-shipping { display: grid; gap: 6px; margin-top: 26px; border-top: 1px solid #e9eeea; padding-top: 21px; color: #354a40; font-size: 12px; }
+.order-shipping .eyebrow { margin-bottom: 2px; }
+.order-shipping span { color: #78857d; }
+.order-payment-line { margin: 22px 0 0; color: #78857d; font-size: 11px; }
+.order-payment-line strong { color: #1f4b3d; }
+.order-detail-actions { display: flex; gap: 11px; margin-top: 20px; }
+
 @media (max-width: 760px) {
   .profile-content { padding: 52px 20px 70px; }
   .profile-layout { grid-template-columns: 1fr; }
   .profile-fields { grid-template-columns: 1fr; }
   .field-wide { grid-column: auto; }
+  .checkout-content, .orders-content, .order-details-content { padding: 52px 20px 70px; }
+  .checkout-layout { grid-template-columns: 1fr; }
+  .checkout-summary { position: static; }
+  .checkout-fields { grid-template-columns: 1fr; }
+  .checkout-field-wide { grid-column: auto; }
+  .order-card-footer { align-items: flex-start; flex-wrap: wrap; }
+  .order-card-footer .button { margin-left: 0; }
+  .order-card-heading { flex-direction: column; }
+  .order-detail-actions { flex-direction: column; }
 }

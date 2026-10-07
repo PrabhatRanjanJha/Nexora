@@ -2,7 +2,7 @@
 
 Nexora is a full-stack e-commerce platform built with React, Express, MongoDB, and Mongoose. Customers can create accounts, browse a database-backed product catalogue, search and filter products, view product details, and manage their profile and delivery address.
 
-The project is under active development. Cart, checkout, payment, and order persistence are planned for later iterations.
+Customers can maintain a persistent cart, check out with a saved or new delivery address, pay in Razorpay Test Mode, and view their order history.
 
 ## Features
 
@@ -20,7 +20,10 @@ The project is under active development. Cart, checkout, payment, and order pers
 - Persistent, customer-specific wishlist with protected APIs
 - Product-card wishlist actions and a responsive wishlist page
 - Wishlist product count in the shopping navigation
-- Product details page with UI-only Add to Cart action
+- Persistent customer-specific cart with stock-aware quantity updates
+- Checkout with validated shipping details and server-calculated totals
+- Razorpay Test Mode checkout with server-side payment-signature verification
+- Historical order snapshots and protected order history/details
 - Loading, error, and empty states
 - MongoDB persistence and bcrypt password hashing
 
@@ -46,6 +49,7 @@ The project is under active development. Cart, checkout, payment, and order pers
 - dotenv
 - cookie-parser
 - cors
+- Razorpay
 
 ## Local URLs
 
@@ -74,13 +78,18 @@ Nexora/
 │       │   ├── PublicRoute.jsx
 │       │   └── StatusMessage.jsx
 │       ├── context/
-│       │   └── AuthContext.jsx
+│       │   ├── AuthContext.jsx
+│       │   └── CartContext.jsx
 │       ├── Pages/
+│       │   ├── Cart.jsx
+│       │   ├── Checkout.jsx
 │       │   ├── CustomerProfile.jsx
 │       │   ├── Home.jsx
 │       │   ├── Landing.jsx
 │       │   ├── Login.jsx
 │       │   ├── Logout.jsx
+│       │   ├── OrderDetails.jsx
+│       │   ├── Orders.jsx
 │       │   ├── ProductDetails.jsx
 │       │   ├── Products.jsx
 │       │   └── Signup.jsx
@@ -91,15 +100,18 @@ Nexora/
 └── server/
     ├── controllers/
     │   ├── customer.controllers.js
+    │   ├── order.controllers.js
     │   └── product.controllers.js
     ├── middlewares/
     │   ├── authMiddleware.js
     │   └── upload.middleware.js
     ├── model/
     │   ├── customer.model.js
+    │   ├── order.model.js
     │   └── product.model.js
     ├── routes/
     │   ├── customer.routes.js
+    │   ├── order.routes.js
     │   └── product.routes.js
     ├── utils/
     │   └── genToken.js
@@ -117,6 +129,10 @@ Nexora/
 | `/products` | Protected | Dynamic product listing, search, filtering, and sorting |
 | `/products/:id` | Protected | Individual product details |
 | `/wishlist` | Protected | Saved products with remove and product-detail actions |
+| `/cart` | Protected | Persistent customer shopping cart |
+| `/checkout` | Protected | Delivery details, final review, and payment |
+| `/orders` | Protected | Customer's order history |
+| `/orders/:id` | Protected | Order confirmation and delivery details |
 | `/profile` | Protected | Customer details, address, and profile image management |
 | `/logout` | Public | Clears the session and redirects to login |
 
@@ -155,6 +171,26 @@ Customer responses are sanitized so the stored password is never returned. Profi
 | `DELETE` | `/wishlist/:productId` | Remove a product from the authenticated customer's wishlist |
 
 Wishlist records store Product ObjectId references on the Customer document. All wishlist endpoints use the existing HTTP-only JWT cookie and never accept a customer ID from the client. Duplicate additions return `409`; invalid IDs return `400`; missing products or wishlist entries return `404`.
+
+### Cart APIs
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `GET` | `/cart` | Return the authenticated customer's populated cart |
+| `POST` | `/cart/:productId` | Add one available product to the cart |
+| `PATCH` | `/cart/:productId` | Set a stock-checked item quantity |
+| `DELETE` | `/cart/:productId` | Remove an item |
+
+### Order APIs
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `POST` | `/orders/create-payment-order` | Revalidate cart and stock, snapshot product data, calculate the total, and create a Razorpay order |
+| `POST` | `/orders/verify-payment` | Verify the Razorpay signature, mark the order placed, and clear the customer's cart |
+| `GET` | `/orders` | Return only the authenticated customer's orders, newest first |
+| `GET` | `/orders/:id` | Return one order only when it belongs to the authenticated customer |
+
+Order item names, prices, and images are copied at checkout so later product edits do not change historical receipts. Cart prices and totals supplied by the browser are never used for order creation.
 
 Product listing query parameters:
 
@@ -204,9 +240,21 @@ Create `server/.env`:
 ```env
 dbURL=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
+RAZORPAY_KEY_ID=your_test_key_id
+RAZORPAY_KEY_SECRET=your_test_key_secret
 ```
 
-Do not commit `.env` files or real credentials.
+Use Razorpay **Test Mode** keys only while developing. Keep `RAZORPAY_KEY_SECRET` on the server; it is used to create payment orders and verify payment signatures. The Key ID is returned by the authenticated create-payment-order API for the browser checkout. Do not commit `.env` files or real credentials.
+
+#### Get Razorpay Test API keys
+
+1. Create or sign in to your account at [Razorpay](https://razorpay.com/).
+2. Open the Razorpay Dashboard and switch to **Test Mode**.
+3. Go to **Account & Settings** → **Website and app settings** → **API Keys**. Dashboard labels may vary slightly.
+4. Choose **Generate Test Key** to create a test key pair.
+5. Copy the **Key ID** into `RAZORPAY_KEY_ID` in `server/.env`.
+6. Copy the **Key Secret** into `RAZORPAY_KEY_SECRET` in `server/.env`. Treat it like a password; never put it in client code, screenshots, or Git.
+7. Save the file and restart the backend. Use Razorpay's Test Mode payment details to complete a test checkout; no real payment is made.
 
 ### Install dependencies
 
@@ -263,13 +311,11 @@ node index.js
 - Profile and shipping updates require authentication.
 - Profile image uploads accept images up to 2 MB.
 - Passwords are removed from all customer API responses.
-- MongoDB credentials and JWT secrets must remain in local environment files.
+- MongoDB credentials, JWT secrets, and Razorpay secrets must remain in local environment files.
 
 ## Current Limitations
 
-- Add to Cart is currently a frontend-only interaction.
-- Cart persistence is not implemented yet.
-- Checkout, payments, and order history are not implemented yet.
+- Razorpay needs valid Test Mode keys in `server/.env`; do not use live keys for local testing.
 - Product creation is currently an open API and does not yet require admin authorization.
 - Automated tests are not currently configured.
 

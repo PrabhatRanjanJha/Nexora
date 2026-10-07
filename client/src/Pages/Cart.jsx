@@ -7,7 +7,7 @@ function formatPrice(price) {
 }
 
 function Cart() {
-  const { cartItems, cartLoading, cartError, subtotal, updateQuantity, removeFromCart } = useCart()
+  const { cartItems, cartLoading, cartError, subtotal, updateQuantity, removeFromCart, refreshCart } = useCart()
   const [updatingId, setUpdatingId] = useState('')
 
   const handleQuantityChange = async (productId, nextQuantity) => {
@@ -40,7 +40,7 @@ function Cart() {
       <main className="catalog-page catalog-state catalog-error">
         <div>
           <p>{cartError}</p>
-          <button type="button" className="catalog-retry" onClick={() => window.location.reload()}>Try Again</button>
+          <button type="button" className="catalog-retry" onClick={refreshCart}>Try Again</button>
         </div>
       </main>
     )
@@ -53,6 +53,7 @@ function Cart() {
         <div className="nav-actions">
           <Link className="nav-link" to="/products">Products</Link>
           <Link className="nav-link" to="/wishlist">Wishlist</Link>
+          <Link className="nav-link" to="/orders">Orders</Link>
           <Link className="nav-link" to="/profile">Account</Link>
         </div>
       </nav>
@@ -111,7 +112,7 @@ function Cart() {
               <h3>Order Summary</h3>
               <div className="summary-row"><span>Items</span><strong>{itemCount}</strong></div>
               <div className="summary-row"><span>Subtotal</span><strong>{formatPrice(subtotal)}</strong></div>
-              <button type="button" className="button button-accent cart-checkout-button" disabled={cartItems.length === 0}>Proceed to Checkout</button>
+              <Link className="button button-accent cart-checkout-button" to="/checkout">Proceed to Checkout</Link>
             </aside>
           </div>
         )}

@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 import WishlistNavLink from '../components/WishlistNavLink.jsx'
 import CartNavLink from '../components/CartNavLink.jsx'
 
-const emptyAddress = { street: '', city: '', postalCode: '', country: '' }
+const emptyAddress = { street: '', city: '', state: '', postalCode: '', country: '' }
 
 function CustomerProfile() {
   const { user, setUser } = useAuth()
@@ -75,6 +75,7 @@ function CustomerProfile() {
         shippingAddress: {
           street: form.street,
           city: form.city,
+          state: form.state,
           postalCode: form.postalCode,
           country: form.country
         }
@@ -108,7 +109,7 @@ function CustomerProfile() {
     <main className="profile-page shop-home">
       <nav className="site-nav home-nav" aria-label="Account navigation">
         <Link className="brand" to="/home" aria-label="Back to Nexora home"><span className="brand-mark">N</span><span>Nexora</span></Link>
-        <div className="nav-actions"><WishlistNavLink /><CartNavLink /><Link className="nav-link" to="/home">Back to shopping</Link></div>
+        <div className="nav-actions"><WishlistNavLink /><CartNavLink /><Link className="nav-link" to="/orders">Orders</Link><Link className="nav-link" to="/home">Back to shopping</Link></div>
       </nav>
 
       <section className="profile-content">
@@ -136,6 +137,7 @@ function CustomerProfile() {
             <div className="profile-fields address-fields">
               <label className="field-wide">Street address<input name="street" value={form.street} onChange={handleChange} placeholder="Apartment, building and street" /></label>
               <label>City<input name="city" value={form.city} onChange={handleChange} /></label>
+              <label>State<input name="state" value={form.state} onChange={handleChange} /></label>
               <label>Postal code<input name="postalCode" value={form.postalCode} onChange={handleChange} /></label>
               <label>Country<input name="country" value={form.country} onChange={handleChange} /></label>
             </div>
